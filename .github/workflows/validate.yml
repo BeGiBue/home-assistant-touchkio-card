@@ -15,3 +15,16 @@ jobs:
       - uses: hacs/action@main
         with:
           category: plugin
+
+  security:
+    name: Security regression tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node --check touchkio-card.js
+      - run: node --test tests/*.test.mjs
