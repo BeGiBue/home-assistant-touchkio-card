@@ -432,5 +432,5 @@ class TouchkioCard extends HTMLElement{
 }
 if(!customElements.get("touchkio-card"))customElements.define("touchkio-card",TouchkioCard);
 window.customCards=window.customCards||[];
-if(!window.customCards.some(c=>c.type==="touchkio-card"))window.customCards.push({type:"touchkio-card",name:"TouchKio Card",description:"Steuerung und Status für TouchKio im Glas-Look, optimiert für iPhone, iPad und Hochformat-Kiosk.",preview:true,documentationURL:"https://github.com/BeGiBue/TouchKio-Card"});
+if(!window.customCards.some(c=>c.type==="touchkio-card"))window.customCards.push({type:"touchkio-card",name:"TouchKio Card",description:"Steuerung und Status für TouchKio im Glas-Look, optimiert für iPhone, iPad und Hochformat-Kiosk.",preview:true,documentationURL:"https://github.com/BeGiBue/home-assistant-touchkio-card"});
 console.info(`TouchKio Card v${TOUCHKIO_CARD_VERSION}`);
