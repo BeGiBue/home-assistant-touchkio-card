@@ -3,7 +3,7 @@
 ## 2.0.1 - 2026-10-28
 
 - Aufräumarbeiten ohne Funktionsänderung: Begrenzung der Kartengröße an einer Stelle zusammengeführt, nie zutreffende Prüfungen, doppelte Gestaltungsregeln und eine Zwischenliste bei der Seitenauswahl entfernt. Aussehen, Konfiguration und Verhalten bleiben unverändert.
-- Repository verschlankt: nicht benötigte Logo-Dateien, interne Release-Checkliste und die Pflicht-Dateien `RELEASE_NOTES_<Version>.md` entfernt (der Release-Text kommt jetzt aus diesem Changelog), doppelten Bild-Abschnitt aus der README genommen, Security-Review gekürzt.
+- Repository verschlankt: nicht benötigte Logo-Dateien, interne Release-Checkliste und die Pflicht-Dateien `RELEASE_NOTES_<Version>.md` entfernt (der Release-Text kommt jetzt aus diesem Changelog), doppelten Bild-Abschnitt aus der README genommen.
 
 ## 2.0.0 - 2026-10-24
 
@@ -11,7 +11,7 @@
 - Migration bestehender Custom Repositories dokumentiert: nur den benutzerdefinierten Eintrag entfernen, bestehende Installation und Dashboard-Konfigurationen behalten.
 - Major-Version als HACS-Meilenstein: bedeutet nicht automatisch Breaking Changes. Bestehende Konfigurationsschlüssel bleiben erhalten.
 - README auf Funktionen, Einrichtung, Bedienung, Voraussetzungen und Grenzen ausgerichtet.
-- Security-Review und Regressionstests für Entity-Zustände, Paketdaten, Auswahlwerte, Dashboard-Titel und Konfigurationswerte. Kein bestätigter hoher oder kritischer Befund.
+- Regressionstests für Entity-Zustände, Paketdaten, Auswahlwerte, Dashboard-Titel und Konfigurationswerte ergänzt.
 
 ## 1.0.5
 
