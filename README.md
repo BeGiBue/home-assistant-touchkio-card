@@ -19,7 +19,7 @@
 <img src="https://raw.githubusercontent.com/BeGiBue/home-assistant-touchkio-card/main/screenshots/touchkio-normal-800-light.png" width="800" alt="TouchKio Card im Normalbetrieb, 800 px Kartenbreite, helles Theme">
 
 <p align="center">
-  <strong>Version 2.0.0</strong><br>
+  <strong>Version 2.0.1</strong><br>
   <a href="https://github.com/BeGiBue/home-assistant-touchkio-card/actions/workflows/validate.yml"><img src="https://github.com/BeGiBue/home-assistant-touchkio-card/actions/workflows/validate.yml/badge.svg" alt="HACS validation"></a>
 </p>
 
@@ -75,8 +75,8 @@ Das Projekt ist im offiziellen HACS-Katalog verfügbar.
 
 ### Bestehende Custom-Repository-Installation migrieren
 
-1. Zuerst prüfen, ob **TouchKio Card** im offiziellen HACS-Katalog gefunden wird. Falls nicht, HACS aktualisieren und den bisherigen Eintrag vorerst behalten.
-2. Unter **HACS → ⋮ → Benutzerdefinierte Repositories** nur den Eintrag für dieses Repository entfernen.
+1. Prüfen, dass **TouchKio Card** im offiziellen HACS-Katalog verfügbar ist.
+2. Danach unter **HACS → ⋮ → Benutzerdefinierte Repositories** nur den Eintrag für dieses Repository entfernen.
 3. **Die bestehende Installation nicht deinstallieren.** Installation, Dashboard-Ressource und Kartenkonfigurationen beibehalten.
 4. HACS neu laden bzw. **Informationen aktualisieren**, anschließend die weiterhin installierte Karte und angebotene Updates prüfen.
 5. Nach einem Update das Frontend vollständig neu laden und die vorhandenen Dashboard-Karten prüfen.
@@ -148,17 +148,13 @@ Der Picker liest über die Home-Assistant-Schnittstelle die Dashboards (`lovelac
 - Dashboards im automatisch generierten Modus liefern keine Konfiguration und erscheinen mit einer einzelnen Startseite.
 - Die Auswahl wird einmal beim Laden der Card gelesen; nach neuen Dashboards oder Ansichten die Seite neu laden.
 
-## Bild
-
-Das freigestellte TouchKio-Gerätebild ist direkt in der JavaScript-Komponente eingebettet und wird nicht aus einem Ordner geladen. Mit `show_image: false` wird es ausgeblendet, mit `image_url` durch ein eigenes Bild ersetzt.
-
 ## Voraussetzungen und Grenzen
 
 Benötigt werden Home Assistant mit Custom-Card-Unterstützung und die in der Konfiguration zugeordneten Entitäten. Die Karte richtet die Geräteintegration nicht selbst ein. Nicht verfügbare Messwerte werden als solche angezeigt; Gerätestatus und Aktualität hängen von der zugrunde liegenden Integration ab.
 
 Aktionen laufen über die angemeldete Home-Assistant-Sitzung und deren Berechtigungen. Die Bestätigung per zweitem Tippen verhindert versehentliche Bedienung; sie ersetzt keine Berechtigungsprüfung. Eigene Bild-URLs werden vom Browser geladen und können dessen IP-Adresse und Metadaten an den Bildanbieter übertragen. Für lokale Bilder `/local/…` verwenden und keine Zugangsdaten in URLs eintragen.
 
-Die Seitenauswahl schreibt die gewählte URL in die TouchKio-Textentität. Es werden nur Dashboards angezeigt, die die Home-Assistant-Sitzung lesen darf. App-Installation, Neustart und Abschalten benötigen passende Geräteentitäten und Dienste.
+Die Seitenauswahl zeigt nur Dashboards, die die Home-Assistant-Sitzung lesen darf. App-Installation, Neustart und Abschalten benötigen passende Geräteentitäten und Dienste.
 
 ## Hinweise zu Marken
 

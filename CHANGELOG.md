@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.1 - 2026-10-28
+
+- Aufräumarbeiten ohne Funktionsänderung: Begrenzung der Kartengröße an einer Stelle zusammengeführt, nie zutreffende Prüfungen, doppelte Gestaltungsregeln und eine Zwischenliste bei der Seitenauswahl entfernt. Aussehen, Konfiguration und Verhalten bleiben unverändert.
+- Repository verschlankt: nicht benötigte Logo-Dateien, interne Release-Checkliste und die Pflicht-Dateien `RELEASE_NOTES_<Version>.md` entfernt (der Release-Text kommt jetzt aus diesem Changelog), doppelten Bild-Abschnitt aus der README genommen, Security-Review gekürzt.
+
 ## 2.0.0 - 2026-10-24
 
 - Aufnahme in den offiziellen HACS-Katalog; reguläre Installation über die HACS-Suche.
