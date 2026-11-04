@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.2-beta.1 - 2026-11-04
+## 2.0.2 - 2026-11-04
 
 - Behoben: Die Card zappelte (Schrift und Höhe wechselten schnell hin und her), wenn ihre Breite knapp an einer Schriftstufe lag (z. B. 400 px) und die Scrollleiste der Seite dadurch ein- und ausgeblendet wurde. Die Schriftstufe wird jetzt mit ±12 px Hysterese gewählt und kippt bei kleinen Breitenänderungen nicht mehr.
 
