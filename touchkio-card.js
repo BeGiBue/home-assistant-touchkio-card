@@ -63,7 +63,20 @@ class TouchkioCard extends HTMLElement{
     return{columns:12,min_columns:4,rows:r,min_rows:r,max_rows:r};
   }
   _scale(){return Math.min(1.8,Math.max(.8,Number(this._config.scale)||1));}
+  // Schriftstufe nach Breite (14/15/17/19/22 px ab 0/400/600/800/1000 px) mit Hysterese von ±12 px:
+  // Ändert eine Scrollleiste die Breite um wenige Pixel, kippt die Stufe nicht hin und her (sonst schwingt die Höhe mit)
+  _applyTier(){
+    const hc=this.shadowRoot.querySelector("ha-card"),w=this.clientWidth;
+    if(!hc||!w)return;
+    const T=[0,400,600,800,1000],S=[14,15,17,19,22],H=12;
+    let t=this._tier;
+    if(t===undefined){t=0;for(let i=1;i<T.length;i++)if(w>=T[i])t=i;}
+    else{while(t<T.length-1&&w>=T[t+1]+H)t++;while(t>0&&w<T[t]-H)t--;}
+    this._tier=t;
+    hc.style.setProperty("--fs",S[t]+"px");
+  }
   _measure(){
+    this._applyTier();
     const card=this.shadowRoot.querySelector("ha-card"),main=card?.querySelector("main");
     if(!main||!this.clientWidth||this._pkgOpen)return;
     const cs=getComputedStyle(card),hs=getComputedStyle(this);
@@ -302,13 +315,10 @@ class TouchkioCard extends HTMLElement{
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;text-align:left;border:0;background:none;padding:0}
     /* Hintergrund, Rand, Radius und Blur kommen vom Theme (z. B. Frosted Glass) */
-    ha-card{--s:1;font-size:calc(14px*var(--s));height:auto;min-height:100%;overflow:visible;color:var(--txt);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+    ha-card{--s:1;font-size:calc(var(--fs,14px)*var(--s));height:auto;min-height:100%;overflow:visible;color:var(--txt);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
     /* Nur bei aufgeklappter Paketliste scrollt die Card selbst; am Listenende wird die Geste an die Seite weitergereicht (kein overscroll-behavior:contain) */
     ha-card.scroll{height:100%;overflow-x:hidden;overflow-y:auto;scrollbar-width:none;overscroll-behavior-y:auto;-webkit-overflow-scrolling:touch}
-    @container (min-width:400px){ha-card{font-size:calc(15px*var(--s))}}
-    @container (min-width:600px){ha-card{font-size:calc(17px*var(--s))}}
-    @container (min-width:800px){ha-card{font-size:calc(19px*var(--s))}}
-    @container (min-width:1000px){ha-card{font-size:calc(22px*var(--s))}}
+    /* Schriftgröße (--fs) wird in _applyTier() mit Hysterese aus der Breite gewählt (kein Kippen an den Stufen → keine Messschleife mit der Scrollleiste) */
     main{padding:calc(16px*var(--s));display:grid;grid-template-columns:minmax(0,1fr);gap:.6em}
     .tone-primary{--t:var(--pri)}.tone-success{--t:var(--ok)}.tone-warning{--t:var(--warn)}.tone-error{--t:var(--err)}.tone-neutral{--t:var(--mut)}
     .panel{background:var(--fill);border:1px solid var(--line);border-radius:1.1em}

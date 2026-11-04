@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.2-beta.1 - 2026-11-04
+
+- Behoben: Die Card zappelte (Schrift und Höhe wechselten schnell hin und her), wenn ihre Breite knapp an einer Schriftstufe lag (z. B. 400 px) und die Scrollleiste der Seite dadurch ein- und ausgeblendet wurde. Die Schriftstufe wird jetzt mit ±12 px Hysterese gewählt und kippt bei kleinen Breitenänderungen nicht mehr.
+
 ## 2.0.1 - 2026-10-28
 
 - Aufräumarbeiten ohne Funktionsänderung: Begrenzung der Kartengröße an einer Stelle zusammengeführt, nie zutreffende Prüfungen, doppelte Gestaltungsregeln und eine Zwischenliste bei der Seitenauswahl entfernt. Aussehen, Konfiguration und Verhalten bleiben unverändert.
