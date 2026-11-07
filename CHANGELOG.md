@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0 - 2026-11-07
+
+- The card and its editor now appear in English by default and in German when Home Assistant is set to German. / Karte und Editor erscheinen jetzt standardmäßig auf Englisch und auf Deutsch, wenn Home Assistant auf Deutsch eingestellt ist.
+- The default subtitle and update title follow the Home Assistant language; titles already saved in a card stay unchanged. / Standard-Untertitel und Update-Titel folgen der Sprache von Home Assistant; bereits gespeicherte Titel bleiben unverändert.
+- README shortened and available in English and German. / README gekürzt und auf Englisch und Deutsch verfügbar.
+
 ## 2.0.2 - 2026-11-04
 
 - Behoben: Die Card zappelte (Schrift und Höhe wechselten schnell hin und her), wenn ihre Breite knapp an einer Schriftstufe lag (z. B. 400 px) und die Scrollleiste der Seite dadurch ein- und ausgeblendet wurde. Die Schriftstufe wird jetzt mit ±12 px Hysterese gewählt und kippt bei kleinen Breitenänderungen nicht mehr.
