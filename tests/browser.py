@@ -231,6 +231,50 @@ async () => {
     await turn(700);
   }
 
+  // --- Zusammenspiel Regler und Aktionen ---
+  {
+    const f = fixture(), c = f.cfg;
+    await turn(20);
+    const sl = q(f.card, 'input[data-slider]'), btn = () => q(f.card, `[data-press="${c.reboot_entity}"]`);
+    sl.dispatchEvent(new PointerEvent('pointerdown', {bubbles: true, composed: true}));
+    sl.value = '35'; sl.dispatchEvent(new Event('input', {bubbles: true}));
+    sl.dispatchEvent(new Event('change', {bubbles: true})); sl.dispatchEvent(new PointerEvent('pointerup', {bubbles: true, composed: true}));
+    await turn(50);
+    btn().click();
+    check('direkt nach dem Regler: Nachfrage erscheint sofort, Regler behält seinen Stand', btn().classList.contains('arm') && sl.value === '35' && text(q(f.card, '.slv')) === '35%' && f.calls.filter((x) => x[0] === 'button').length === 0);
+    q(f.card, '[data-pkgs]').click();
+    check('direkt nach dem Regler: Paketliste klappt sofort auf', qa(f.card, '.prow').length === 2 && sl.value === '35');
+    await turn(700);
+    const g = fixture();
+    const s2 = q(g.card, 'input[data-slider]');
+    s2.value = '70'; s2.dispatchEvent(new Event('input', {bubbles: true}));
+    check('Reglerbewegung ohne Abschluss: Sicherung läuft', g.card._drag === true && !!g.card._dt);
+    clearTimeout(g.card._dt); g.card._drag = false;
+  }
+  {
+    const f = fixture({config: {refresh_entity: 'button.same', reboot_entity: 'button.same', shutdown_entity: 'button.same'}});
+    qa(f.card, '.act')[1].click();
+    check('gleiche Entität an mehreren Schaltflächen: nur die getippte fragt nach', qa(f.card, '.act.arm').length === 1 && qa(f.card, '.act')[1].classList.contains('arm'));
+  }
+  {
+    const f = fixture({hold: true}), c = f.cfg;
+    const b = () => q(f.card, `[data-press="${c.refresh_entity}"]`);
+    b().click();
+    await turn();
+    check('laufender Aufruf: Schaltfläche zeigt, dass gesendet wird', b().classList.contains('busy'));
+    f.pending.forEach((r) => r());
+    await turn();
+    check('Aufruf fertig: „Gesendet“', b().classList.contains('sent') && !b().classList.contains('busy'));
+  }
+  {
+    const f = fixture(), c = f.cfg, s = baseStates();
+    s[c.update_entity] = st('on', '', {installed_version: '1.4.9', latest_version: '1.5.0', supported_features: 1}); f.set(s);
+    check('nur die installierte Version ändert sich: Anzeige folgt', /1\.4\.9/.test(text(q(f.card, '.upd small'))));
+    q(f.card, '[data-pkgs]').click();
+    s[c.packages_entity] = st('2', '', {packages: [{zlib: '1.3'}, {bash: '5.2'}]}); f.set(s);
+    check('Paketnamen ändern sich bei gleicher Anzahl: Liste folgt', /zlib/.test(text(q(f.card, '.plist'))));
+  }
+
   // --- Bild ---
   {
     const f = fixture({config: {image_url: 'http://127.0.0.1:9/kaputt.png'}});

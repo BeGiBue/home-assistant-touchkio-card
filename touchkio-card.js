@@ -293,11 +293,12 @@ class TouchkioCard extends HTMLElement{
   }
   _lvl(n,w,e){if(isNaN(n))return"primary";return n>=e?"error":n>=w?"warning":"primary";}
 
-  _update(){
-    if(this._drag)return;
+  // force: auch während der Regler bedient wird zeichnen (Nachfrage, Paketliste) – der Regler behält dabei seinen Stand
+  _update(force){
+    if(this._drag&&!force)return;
     const c=this._config;
     const ids=Object.keys(c).filter(k=>k.endsWith("_entity")).map(k=>c[k]);
-    const sig=JSON.stringify(c)+ids.map(id=>{const s=this._s(id);return s?`${s.state}|${s.attributes?.unit_of_measurement||""}|${s.attributes?.brightness??""}|${s.attributes?.latest_version||""}|${s.attributes?.in_progress??""}|${s.attributes?.update_percentage??""}|${s.attributes?.supported_features??""}|${Array.isArray(s.attributes?.packages)?s.attributes.packages.length:""}|${(s.attributes?.options||[]).join(",")}`:"-";}).join("§")+TKLang(this._hass);
+    const sig=JSON.stringify(c)+ids.map(id=>{const s=this._s(id);return s?`${s.state}|${s.attributes?.unit_of_measurement||""}|${s.attributes?.brightness??""}|${s.attributes?.installed_version||""}|${s.attributes?.latest_version||""}|${s.attributes?.in_progress??""}|${s.attributes?.update_percentage??""}|${s.attributes?.supported_features??""}|${Array.isArray(s.attributes?.packages)?JSON.stringify(s.attributes.packages):""}|${(s.attributes?.options||[]).join(",")}`:"-";}).join("§")+TKLang(this._hass);
     if(sig===this._sig&&this._built)return;
     this._sig=sig;this._render();
   }
@@ -380,8 +381,10 @@ class TouchkioCard extends HTMLElement{
   // Slider-Panel für die Display-Helligkeit (Licht, in %)
   _slider(icon,id,label){
     const T=TKT(this._hass),s=this._s(id),a=s?.attributes||{},on=s?.state==="on";
-    const val=on?(a.brightness!=null?Math.round(Number(a.brightness)/255*100):100):0;
-    const live=on?`<b>${val}</b><em>%</em>`:`<em>${T.off}</em>`;
+    // Während der Bedienung gilt der Stand des Reglers, nicht der gemeldete
+    const cur=this._drag?this.shadowRoot.querySelector("input[data-slider]"):null;
+    const val=cur?Number(cur.value):on?(a.brightness!=null?Math.round(Number(a.brightness)/255*100):100):0;
+    const live=(cur?val>0:on)?`<b>${val}</b><em>%</em>`:`<em>${T.off}</em>`;
     return`<section class="panel sl tone-${this._tone(id)}"><div class="slh"><button class="chip" data-toggle="${this._e(id)}" aria-label="${this._e(label)} ${T.on_off}"><ha-icon icon="${icon}"></ha-icon></button><span class="at"><b>${label}</b><small>${this._e(this._f(id))}</small></span><span class="slv">${live}</span></div><input type="range" data-slider="${this._e(id)}" min="0" max="100" step="1" value="${val}" style="--p:${val}%" aria-label="${this._e(label)}"></section>`;
   }
   // Zustand der Aktionen (Bestätigung offen / wird gesendet / gesendet) liegt in der Karte, nicht im Element – so übersteht er neue Werte
@@ -390,20 +393,20 @@ class TouchkioCard extends HTMLElement{
     if(!this._acts)this._acts=new Map();
     clearTimeout(this._acts.get(key)?.timer);
     if(state)this._acts.set(key,{state,timer:ms?setTimeout(()=>this._setAct(key,null),ms):0});else this._acts.delete(key);
-    this._sig="";this._update();
+    this._sig="";this._update(true);
   }
   _act(icon,id,title,sub,danger,confirm){
-    const T=TKT(this._hass),st=this._actState("press:"+id),arm=st==="arm",sent=st==="sent";
-    return`<button class="act${danger?" danger":""}${arm?" arm":""}${sent?" sent":""}" data-press="${this._e(id)}"${confirm?' data-confirm="1"':""}><span class="chip"><ha-icon icon="${icon}"></ha-icon></span><span class="at"><b>${arm?T.tap_again:sent?T.sent:this._e(title)}</b><small>${arm?T.to_confirm:sent?"":this._e(sub)}</small></span></button>`;
+    const T=TKT(this._hass),st=this._actState(`press:${icon}:${id}`),arm=st==="arm",sent=st==="sent";
+    return`<button class="act${danger?" danger":""}${arm?" arm":""}${sent?" sent":""}${st==="busy"?" busy":""}" data-press="${this._e(id)}" data-act="${icon}"${confirm?' data-confirm="1"':""}><span class="chip"><ha-icon icon="${icon}"></ha-icon></span><span class="at"><b>${arm?T.tap_again:sent?T.sent:this._e(title)}</b><small>${arm?T.to_confirm:sent?"":this._e(sub)}</small></span></button>`;
   }
 
   async _call(domain,service,data){try{await this._hass.callService(domain,service,data);return true;}catch(_){return false;}}
   async _press(btn){
     const id=btn.dataset.press;if(!id||!this._hass)return;
-    const key="press:"+id,st=this._actState(key);
+    const key=`press:${btn.dataset.act}:${id}`,st=this._actState(key);
     if(st==="busy"||st==="sent")return;
     if(btn.dataset.confirm&&this._config.confirm_actions!==false&&st!=="arm"){this._setAct(key,"arm",4000);return;}
-    this._setAct(key,"busy");
+    this._setAct(key,"busy",10000);
     const d=id.split(".")[0];
     const ok=d==="button"?await this._call("button","press",{entity_id:id}):d==="script"?await this._call("script","turn_on",{entity_id:id}):await this._call("homeassistant","toggle",{entity_id:id});
     this._setAct(key,ok?"sent":null,2500);
@@ -413,7 +416,7 @@ class TouchkioCard extends HTMLElement{
     const key="install:"+id,st=this._actState(key);
     if(st==="busy"||st==="sent")return;
     if(this._config.confirm_actions!==false&&st!=="arm"){this._setAct(key,"arm",4000);return;}
-    this._setAct(key,"busy");
+    this._setAct(key,"busy",10000);
     const ok=await this._call("update","install",{entity_id:id});
     this._setAct(key,ok?"sent":null,4000);
   }
@@ -426,7 +429,7 @@ class TouchkioCard extends HTMLElement{
     r.addEventListener("click",e=>{
       const x=e.target.closest?.("[data-more],[data-pkgs],[data-install],[data-press],[data-toggle]");if(!x)return;
       if(x.dataset.more!==undefined)this._more(x.dataset.more);
-      else if(x.dataset.pkgs!==undefined){this._pkgOpen=!this._pkgOpen;this._sig="";this._update();}
+      else if(x.dataset.pkgs!==undefined){this._pkgOpen=!this._pkgOpen;this._sig="";this._update(true);}
       else if(x.dataset.install!==undefined)this._install(x.dataset.install);
       else if(x.dataset.press!==undefined)this._press(x);
       else{const id=x.dataset.toggle;this._call(id.split(".")[0],"toggle",{entity_id:id});}
@@ -444,7 +447,7 @@ class TouchkioCard extends HTMLElement{
     });
     r.addEventListener("input",e=>{
       const sl=slider(e);if(!sl)return;
-      this._drag=true;
+      this._drag=true;clearTimeout(this._dt);this._dt=setTimeout(()=>{this._drag=false;this._update();},8000);
       const T=TKT(this._hass),v=Number(sl.value),live=sl.closest(".sl")?.querySelector(".slv");
       sl.style.setProperty("--p",`${v}%`);
       if(live)live.innerHTML=v===0?`<em>${T.off}</em>`:`<b>${v}</b><em>%</em>`;
@@ -476,7 +479,7 @@ class TouchkioCard extends HTMLElement{
     const ist=this._actState("install:"+c.update_entity);
     const canInstall=up?.state==="on"&&((Number(ua.supported_features)||0)&1)===1,busy=ua.in_progress===true||(typeof ua.in_progress==="number"&&ua.in_progress>0);
     const upAct=busy?`<span class="pill static tone-primary"><i class="dot"></i><b>${ua.update_percentage!=null?`${this._e(Math.round(Number(ua.update_percentage)))} %`:T.running}</b></span>`
-      :canInstall?`<button class="pill inst${ist==="arm"?" arm":""}" data-install="${this._e(c.update_entity)}"><i class="dot"></i><b>${ist==="arm"?T.tap_again:ist?T.sent:T.install}</b></button>`
+      :canInstall?`<button class="pill inst${ist==="arm"?" arm":""}${ist==="busy"?" busy":""}" data-install="${this._e(c.update_entity)}"><i class="dot"></i><b>${ist==="arm"?T.tap_again:ist?T.sent:T.install}</b></button>`
       :`<span class="pill static"><i class="dot"></i><b>${this._e(this._f(c.update_entity))}</b></span>`;
     const tiles=[
       has(c.temperature_entity)&&this._tile("mdi:thermometer",c.temperature_entity,T.temp,this._lvl(this._n(c.temperature_entity),70,80)),
@@ -618,6 +621,7 @@ class TouchkioCard extends HTMLElement{
     .act.arm{background:color-mix(in srgb,var(--err) 18%,transparent);border-color:var(--err)}
     .act.arm .chip{--t:var(--err)}
     .act.sent{border-color:var(--ok)}.act.sent .chip{--t:var(--ok)}
+    .act.busy,.pill.busy{opacity:.6}
 
     /* vier Messwerte nebeneinander und Aktionen in einer Reihe erst, wenn sie Platz haben */
     ha-card.w560 .foot.n3{grid-template-columns:repeat(3,minmax(0,1fr))}ha-card.w560 .foot.n3.odd .act:first-child{grid-column:auto}
