@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.1.1 - 2026-11-12
+
+- New values no longer rebuild the card: only changed texts and attributes are set. Keyboard focus, an open selection list and the loaded image stay in place, and the kiosk has less to redraw. / Neue Werte bauen die Karte nicht mehr neu auf: Es werden nur geänderte Texte und Attribute gesetzt. Tastaturfokus, eine geöffnete Auswahlliste und das geladene Bild bleiben erhalten, und der Kiosk muss weniger neu zeichnen.
+- Fixed: the "Tap again" confirmation of Reboot, Shut down and Install disappeared when a sensor value changed in between. It now stays until confirmed or timed out; taps while a command is being sent are ignored. / Behoben: Die Nachfrage „Nochmal tippen“ bei Neustart, Ausschalten und Installieren verschwand, wenn sich zwischendurch ein Messwert änderte. Sie bleibt jetzt bis zur Bestätigung oder zum Ablauf stehen; Tippen während des Sendens wird ignoriert.
+- The column changes at 340 px and 560 px card width now use the same ±12 px tolerance as the font size, so the layout does not flip when a scrollbar appears. / Die Spaltenwechsel bei 340 px und 560 px Kartenbreite nutzen jetzt dieselbe Toleranz von ±12 px wie die Schriftgröße; die Aufteilung kippt nicht mehr, wenn eine Scrollleiste erscheint.
+- A custom image that cannot be loaded is remembered and replaced by the built-in image without retrying on every update; an invalid image setting no longer breaks the card. / Ein nicht ladbares eigenes Bild wird gemerkt und durch das eingebaute ersetzt, ohne bei jeder Aktualisierung neu zu laden; eine ungültige Bildeinstellung bringt die Karte nicht mehr zum Absturz.
+- Height is measured in the next frame (no "ResizeObserver loop" messages) and measuring continues after the card was moved in the dashboard. / Die Höhe wird im nächsten Bild gemessen (keine „ResizeObserver loop“-Meldungen), und nach dem Verschieben der Karte im Dashboard wird weiter gemessen.
+- Browser tests for layout, controls and updates added. / Browser-Tests für Layout, Bedienung und Aktualisierung ergänzt.
+
 ## 2.1.0 - 2026-11-07
 
 - The card and its editor now appear in English by default and in German when Home Assistant is set to German. / Karte und Editor erscheinen jetzt standardmäßig auf Englisch und auf Deutsch, wenn Home Assistant auf Deutsch eingestellt ist.

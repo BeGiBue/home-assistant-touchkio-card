@@ -7,7 +7,7 @@ const elements = new Map();
 const context = vm.createContext({
   HTMLElement: class {
     attachShadow() {
-      this.shadowRoot = { innerHTML: "", querySelector: () => null, querySelectorAll: () => [] };
+      this.shadowRoot = { innerHTML: "", querySelector: () => null, querySelectorAll: () => [], addEventListener() {} };
     }
   },
   customElements: { get: (name) => elements.get(name), define: (name, cls) => elements.set(name, cls) },
