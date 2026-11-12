@@ -235,7 +235,7 @@ class TouchkioCard extends HTMLElement{
   // Auch die Inhaltshöhe beobachten (Umbrüche, nachgeladene Schrift), damit die gemeldete Zeilenzahl nicht veraltet
   _watchMain(){const m=this.shadowRoot.querySelector("main");if(!this._ro||!m||this._mainEl===m)return;if(this._mainEl)this._ro.unobserve(this._mainEl);this._mainEl=m;this._ro.observe(m);}
   disconnectedCallback(){window.removeEventListener("resize",this._onWin);this._ro?.disconnect();cancelAnimationFrame(this._raf);}
-  setConfig(c){this._config={...DEF,...c};this._sig="";this._built=false;this._update();}
+  setConfig(c){this._config={...DEF,...c};this._sig="";this._built=false;this._noImg=false;this._update();}
   set hass(h){this._hass=h;if(!this._pages&&!this._pagesBusy)this._loadPages();this._update();}
   get hass(){return this._hass;}
   getCardSize(){return 10;}
