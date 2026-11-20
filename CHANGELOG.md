@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.2 - 2026-11-20
+
+- Maintenance: test and build tools updated, no functional changes. / Wartung: Test- und Build-Werkzeuge aktualisiert, keine Änderungen an der Funktion.
+
 ## 2.1.1 - 2026-11-12
 
 - New values no longer rebuild the card: only changed texts and attributes are set. Keyboard focus, an open selection list and the loaded image stay in place, and the kiosk has less to redraw. / Neue Werte bauen die Karte nicht mehr neu auf: Es werden nur geänderte Texte und Attribute gesetzt. Tastaturfokus, eine geöffnete Auswahlliste und das geladene Bild bleiben erhalten, und der Kiosk muss weniger neu zeichnen.

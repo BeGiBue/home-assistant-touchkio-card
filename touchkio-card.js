@@ -1,10 +1,10 @@
-// TouchKio Card v2.1.1
+// TouchKio Card v2.1.2
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 BeGiBue
 // Dieses Programm ist freie Software unter der GNU Affero General Public License, Version 3 (siehe LICENSE).
 // Es wird ohne jede Gewährleistung bereitgestellt.
 // Einzeldatei: Steuerung und Status für TouchKio (Raspberry-Pi-Kiosk) im Stil der NAS Card.
-const TOUCHKIO_CARD_VERSION="2.1.1";
+const TOUCHKIO_CARD_VERSION="2.1.2";
 // Gleicht den Inhalt an neues Markup an, statt ihn neu aufzubauen: gleiche Elemente bleiben bestehen (Fokus, geöffnete Auswahl, geladenes Bild), nur geänderte Attribute und Texte werden gesetzt.
 // Gleicht den Inhalt eines Elements an neues Markup an, statt ihn neu aufzubauen: Elemente an derselben Stelle mit
 // demselben Tag (und derselben Kennung) bleiben bestehen, nur geänderte Attribute und Texte werden gesetzt. So bleiben
